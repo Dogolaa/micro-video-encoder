@@ -157,6 +157,23 @@ services:
     networks:
       - micro-network
 
+  notification:
+    build:
+      context: ./notification-service
+      dockerfile: Dockerfile
+    depends_on:
+      service-discovery:
+        condition: service_healthy
+      kafka:
+        condition: service_started
+    env_file:
+      - .env
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://service-discovery:8761/eureka/
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: micro_kafka:29092
+    networks:
+      - micro-network
+
 volumes:
   postgres_micro_data:
   shared_video_storage:
